@@ -27,7 +27,7 @@ parser.add_argument('--gpu', type=int, default=0, help='GPU to use [default: GPU
 parser.add_argument('--model', default='pointnet2_cls_ssg', help='Model name [default: pointnet2_cls_ssg]')
 parser.add_argument('--log_dir', default='log', help='Log dir [default: log]')
 parser.add_argument('--num_point', type=int, default=1024, help='Point Number [default: 1024]')
-parser.add_argument('--max_epoch', type=int, default=251, help='Epoch to run [default: 251]')
+parser.add_argument('--max_epoch', type=int, default=3, help='Epoch to run [default: 3]')
 parser.add_argument('--batch_size', type=int, default=16, help='Batch Size during training [default: 16]')
 parser.add_argument('--learning_rate', type=float, default=0.001, help='Initial learning rate [default: 0.001]')
 parser.add_argument('--momentum', type=float, default=0.9, help='Initial learning rate [default: 0.9]')
@@ -178,7 +178,8 @@ def train():
             eval_one_epoch(sess, ops, test_writer)
 
             # Save the variables to disk.
-            if epoch % 10 == 0:
+            #G: Changed from 10 to 2 for testing.
+            if epoch % 2 == 0:
                 save_path = saver.save(sess, os.path.join(LOG_DIR, "model.ckpt"))
                 log_string("Model saved in file: %s" % save_path)
 
@@ -282,4 +283,6 @@ def eval_one_epoch(sess, ops, test_writer):
 if __name__ == "__main__":
     log_string('pid: %s'%(str(os.getpid())))
     train()
-    LOG_FOUT.close()
+    print('Done!')
+    
+    #G: LOG_FOUT.close()
