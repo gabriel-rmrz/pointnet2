@@ -1,0 +1,17 @@
+name: pn2
+channels:
+  - menpo
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8.13=h582c2e5_0_cpython
+  - opencv
+  - h5py
+  - numpy
+  - scipy
+  - pip
+  - pip:
+    - tensorflow==2.2
+    - protobuf==3.19.6
+    - matplotlib
+prefix: /lustrehome/garamire/anaconda3/envs/pn2
