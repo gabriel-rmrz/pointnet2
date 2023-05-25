@@ -1,5 +1,6 @@
 # TF1.2
-TF_DIR=$(dirname $(python -c "import tensorflow as tf;print(tf.__file__)"))
+#TF_DIR=$(dirname $(python -c "import tensorflow as tf;print(tf.__file__)"))
+TF_DIR=/lustrehome/garamire/miniconda3/envs/tf1/lib/python3.7/site-packages/tensorflow_core/
 
 #g++ -std=c++17 tf_interpolate.cpp -o tf_interpolate_so.so -shared -fPIC -I $TF_DIR/include  -I /usr/local/cuda-11.2/include -lcudart -L /usr/local/cuda-11.2/lib64/ -O2 -D_GLIBCXX_USE_CXX11_ABI=0
 

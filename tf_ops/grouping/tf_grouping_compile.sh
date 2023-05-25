@@ -1,7 +1,8 @@
 #/bin/bash
 /usr/local/cuda-11.2/bin/nvcc tf_grouping_g.cu -o tf_grouping_g.cu.o -c -O2 -DGOOGLE_CUDA=1 -x cu -Xcompiler -fPIC
 
-TF_DIR=$(dirname $(python -c "import tensorflow as tf;print(tf.__file__)"))
+#TF_DIR=$(dirname $(python -c "import tensorflow as tf;print(tf.__file__)"))
+TF_DIR=/lustrehome/garamire/miniconda3/envs/tf1/lib/python3.7/site-packages/tensorflow_core/
 
 # TF1.2
 #g++ -std=c++17 tf_grouping.cpp tf_grouping_g.cu.o -o tf_grouping_so.so -shared -fPIC -I $TF_DIR/include -I /usr/local/cuda-11.2/include -lcudart -L /usr/local/cuda-11.2/lib64/ -O2 -D_GLIBCXX_USE_CXX11_ABI=0 
