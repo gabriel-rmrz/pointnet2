@@ -7,7 +7,9 @@ import math
 from datetime import datetime
 import h5py
 import numpy as np
-import tensorflow as tf
+#import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 import socket
 import importlib
 import os
@@ -106,6 +108,7 @@ def get_bn_decay(batch):
 def train():
     with tf.Graph().as_default():
         with tf.device('/gpu:'+str(GPU_INDEX)):
+            print('here')
             pointclouds_pl, labels_pl = MODEL.placeholder_inputs(BATCH_SIZE, NUM_POINT)
             is_training_pl = tf.placeholder(tf.bool, shape=())
             
@@ -116,21 +119,27 @@ def train():
                 initializer=tf.constant_initializer(0), trainable=False)
             bn_decay = get_bn_decay(batch)
             tf.summary.scalar('bn_decay', bn_decay)
+ 		
 
             # Get model and loss 
             pred, end_points = MODEL.get_model(pointclouds_pl, is_training_pl, bn_decay=bn_decay)
+            print('here3')
             MODEL.get_loss(pred, labels_pl, end_points)
+            print('here4')
             losses = tf.get_collection('losses')
             total_loss = tf.add_n(losses, name='total_loss')
             tf.summary.scalar('total_loss', total_loss)
             for l in losses + [total_loss]:
+                print('here')
                 tf.summary.scalar(l.op.name, l)
 
             correct = tf.equal(tf.argmax(pred, 1), tf.to_int64(labels_pl))
             accuracy = tf.reduce_sum(tf.cast(correct, tf.float32)) / float(BATCH_SIZE)
             tf.summary.scalar('accuracy', accuracy)
+             
+            print('here')
 
-            print "--- Get training operator"
+            print ("--- Get training operator")
             # Get training operator
             learning_rate = get_learning_rate(batch)
             tf.summary.scalar('learning_rate', learning_rate)
@@ -285,4 +294,4 @@ if __name__ == "__main__":
     train()
     print('Done!')
     
-    #G: LOG_FOUT.close()
+    LOG_FOUT.close()
