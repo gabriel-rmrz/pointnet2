@@ -161,4 +161,5 @@ def eval_one_epoch(sess, ops, num_votes=1, topk=1):
 if __name__=='__main__':
     with tf.Graph().as_default():
         evaluate(num_votes=FLAGS.num_votes)
-    LOG_FOUT.close()
+    print('hell oooooo')
+    #LOG_FOUT.close()

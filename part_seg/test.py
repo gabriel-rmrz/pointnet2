@@ -8,13 +8,14 @@ import os
 import scipy.misc
 import sys
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.dirname(BASE_DIR)
 sys.path.append(BASE_DIR)
 sys.path.append(os.path.join(BASE_DIR, 'models'))
 sys.path.append(os.path.join(BASE_DIR, 'utils'))
 import provider
 import show3d_balls
 sys.path.append(os.path.join(ROOT_DIR, 'data_prep'))
-import part_dataset
+import part_dataset_all_normal
 
 
 parser = argparse.ArgumentParser()
@@ -30,9 +31,10 @@ MODEL_PATH = FLAGS.model_path
 GPU_INDEX = FLAGS.gpu
 NUM_POINT = FLAGS.num_point
 MODEL = importlib.import_module(FLAGS.model) # import network module
+MODEL_FILE = os.path.join(ROOT_DIR, 'models', FLAGS.model+'.py')
 NUM_CLASSES = 4
 DATA_PATH = os.path.join(ROOT_DIR, 'data', 'shapenetcore_partanno_segmentation_benchmark_v0_normal')
-TEST_DATASET = part_dataset.PartDataset(root=DATA_PATH, npoints=NUM_POINT, classification=False, class_choice=FLAGS.category, split='test')
+TEST_DATASET = part_dataset_all_normal.PartNormalDataset(root=DATA_PATH, npoints=NUM_POINT, classification=False, split='test')
 
 def get_model(batch_size, num_point):
     with tf.Graph().as_default():
@@ -40,7 +42,8 @@ def get_model(batch_size, num_point):
             pointclouds_pl, labels_pl = MODEL.placeholder_inputs(batch_size, num_point)
             is_training_pl = tf.placeholder(tf.bool, shape=())
             pred, end_points = MODEL.get_model(pointclouds_pl, is_training_pl)
-            loss = MODEL.get_loss(pred, labels_pl, end_points)
+            #loss = MODEL.get_loss(pred, labels_pl, end_points)
+            loss = MODEL.get_loss(pred, labels_pl)
             saver = tf.train.Saver()
         # Create a session
         config = tf.ConfigProto()
@@ -75,7 +78,7 @@ if __name__=='__main__':
     cmap = np.array([cmap(i) for i in range(10)])[:,:3]
 
     for i in range(len(TEST_DATASET)):
-        ps, seg = TEST_DATASET[i]
+        ps, normal, seg = TEST_DATASET[i]
         sess, ops = get_model(batch_size=1, num_point=ps.shape[0])
         segp = inference(sess, ops, np.expand_dims(ps,0), batch_size=1) 
         segp = segp.squeeze()
